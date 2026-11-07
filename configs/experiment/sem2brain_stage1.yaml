@@ -1,0 +1,5 @@
+# @package _global_
+# Sem->Brain, stage 1: semantic loss only (its semantic score is the row's semantic score).
+train_mode: semantic_only
+auxk: false
+name_suffix: sem2brain_stage1

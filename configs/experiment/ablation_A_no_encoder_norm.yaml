@@ -1,0 +1,6 @@
+# @package _global_
+# As in the paper's ablation table, rows A, C and D were trained without AuxK.
+auxk: false
+# Ablation row A: the coupled SAE without encoder-row normalisation.
+no_encoder_norm: true
+name_suffix: ablation_A

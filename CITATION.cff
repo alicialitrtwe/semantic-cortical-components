@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the paper."
+license: CC-BY-NC-4.0
+repository-code: "https://github.com/alicialitrtwe/semantic-cortical-components"
+version: "1.0.0"
+title: "Semantic-Cortical Components: A Multisubject Coupled Sparse Autoencoder for Interpretable Language Encoding in fMRI"
+authors:
+  - family-names: Zeng
+    given-names: Alicia
+preferred-citation:
+  type: conference-paper
+  title: "Semantic-Cortical Components: A Multisubject Coupled Sparse Autoencoder for Interpretable Language Encoding in fMRI"
+  authors:
+    - family-names: Zeng
+      given-names: Alicia
+  collection-title: "Advances in Neural Information Processing Systems"
+  year: 2026

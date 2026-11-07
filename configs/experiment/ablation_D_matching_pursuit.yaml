@@ -1,0 +1,9 @@
+# @package _global_
+# As in the paper's ablation table, rows A, C and D were trained without AuxK.
+auxk: false
+# Ablation row D: matching-pursuit encoder, tied semantic decoder, no encoder bias.
+encoder_mode: mp
+mp_steps: 5
+tie_semantic_decoder: true
+encoder_bias: false
+name_suffix: ablation_D

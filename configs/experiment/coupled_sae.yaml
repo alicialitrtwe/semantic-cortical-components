@@ -1,0 +1,3 @@
+# @package _global_
+# The coupled SAE (Table 1; ablation row B). Identical to the defaults in multisubj.yaml.
+name_suffix: coupled_sae

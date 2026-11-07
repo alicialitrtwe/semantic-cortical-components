@@ -1,0 +1,6 @@
+# @package _global_
+# Sem->Brain, stage 2: brain decoders trained on the frozen stage-1 encoder.
+# Pass freeze_from=<stage-1 run>/model_last.pt on the command line.
+train_mode: brain_only
+auxk: false
+name_suffix: sem2brain_stage2

@@ -1,0 +1,102 @@
+# Hydra config for scripts/17_fit_multisubject_sae.py.
+# Defaults reproduce the paper's coupled SAE (Table 1, row B of the ablation table); pass seed=0|1|2.
+# Run: uv run python scripts/train_multisubj_hydra.py
+# Sweep: uv run python scripts/train_multisubj_hydra.py -m alpha=0.3,1.0,3.0,10.0 seed=0,1,2
+
+defaults:
+  - _self_
+  - optional experiment: null
+  - override hydra/launcher: basic
+
+# Data
+subjects: UTS01,UTS02,UTS03,UTS04,UTS05,UTS06
+trim_start: 0  # TRs to drop at start of each story (= max delay, handles zero-padded delays)
+trim_end: 0                    # no trim needed at end (delays look backward; save-time trim already removed last 5)
+n_stories: 26
+all_stories: true
+train_story_list: null         # explicit comma-sep story list (overrides union/prefix)
+val_story_list: null           # explicit comma-sep val stories held out from train_story_list (pins val across data levels)
+cache_data: true               # write the multi-GB data-cache tensor (set false for many-unique-storyset batches to save disk)
+save_brain_dicts: false        # write per-subject brain_dictionary_<subj>.npy (derived from model.pt; nothing reads them)
+save_best_r: false             # write model_best_r.pt (best-val-brain_r checkpoint; nothing reads it)
+n_voxels: 30000
+voxel_selection: ridge_gemma2_cv
+embedding: gemma2
+whiten: false                  # PCA-whiten features (fit on train, transform all)
+whiten_n_components: 300       # number of PCA components to keep after whitening
+no_demean: false
+
+# Model
+n_atoms: 50
+k: 5
+delays: 1,2,3,4                # 4 delays matching ridge baseline (2-8s at TR=2s)
+no_delay_scaling: false
+subject_specific_delays: false
+no_encoder_norm: false         # encoder rows projected to unit norm (paper: row B)
+brain_decoder_unit_norm: true  # essential regularization
+semantic_decoder_unit_norm: false
+tie_semantic_decoder: false
+freeze_b_pre: false
+brain_voxel_scale: false  # per-voxel learnable scale on top of unit-norm decoder
+brain_gauge_l1: 0.0            # coefficient for gauge-invariant L1 penalty (0 = off)
+temporal_first: false          # sum delays in latent space → 50-dim brain decoder (vs concat → 250-dim)
+loss_normalization: none        # "none" (raw MSE) | "loss" (divide by init MSE) | "gradient" (divide by init gradient norm)
+input_rms_normalize: true       # Gemma Scope style: divide features by global RMS before model sees them
+feature_scale: 1.0               # multiply features by this constant (>1 amplifies tied decoder feedback)
+tv_weight: 0.0                   # Total Variation regularization on brain decoder (0 = off)
+tv_mode: 3d                      # "3d" (voxel adjacency) or "2d" (cortical surface mesh)
+brain_subj_mode: round_robin  # "all" | "round_robin" (one subj/batch, masked) | "round_robin_v2" (per-subj sampling)
+normalize_every: batch  # "epoch" | "batch" (old script 09 used batch)
+train_mode: coupled             # "coupled" | "brain_only" | "semantic_only"
+freeze_from: null               # path to checkpoint — freeze encoder, retrain decoder(s)
+init_from: null                  # path to checkpoint — load encoder weights, keep trainable (fine-tune)
+sparsity_mode: topk            # "topk" (hard k-sparse, Gao) or "l1" (dense ReLU + gauge-invariant L1, Conerly)
+encoder_bias: true             # per-atom activation threshold (Bricken 2023)
+auxk: true                     # AuxK dead-latent prevention (Gao 2024)
+auxk_alpha: 0.03125            # AuxK loss coefficient (1/32)
+auxk_dead_threshold: 50        # batches inactive before atom counts as dead (~1.5 epochs)
+grad_projection: true          # project decoder gradients onto tangent plane of unit sphere
+
+# Optimization
+alpha: 1.0                     # weight of the semantic loss (paper: alpha = 1)
+lr: 0.001
+encoder_lr: null                 # separate encoder lr for fine-tuning (null = same as lr)
+weight_decay: 0.0
+epochs: 600
+batch_size: 1024
+warmup_epochs: 5
+patience: 10
+checkpoint_every: 0              # save checkpoint every N epochs (0 = off)
+matryoshka_levels: null          # list of k levels for Matryoshka training (e.g., [2,5])
+encoder_mode: linear             # "linear" (standard TopK) or "mp" (matching pursuit)
+mp_steps: null                   # MP steps (default: k). Only used when encoder_mode=mp
+grad_clip: 1.0
+
+# Split
+val_mode: story_level
+val_n_stories: 4
+val_seed: 0                    # fixed seed for val story selection (decoupled from training seed)
+val_masked: false              # reported models: validation brain loss over all six subjects (UTS04-06 against zero-padded targets); true = per-subject (robustness check, Brain->Sem)
+zscore_own_rows: false         # z-score each subject over its own time points only (robustness check); false = reported models
+val_fraction: 0.1              # only used if val_mode=random_tr
+
+# Misc
+seed: 0
+num_workers: 0
+device: cuda                   # auto-falls back to cpu if unavailable
+data_device: null              # where the dataset tensors live; null = device (whole cache on the GPU). cpu = keep in RAM, move one batch at a time (small GPUs); same batches, same arithmetic
+name_suffix: ""
+
+# W&B
+wandb: false
+wandb_project: semantic-cortical-components
+wandb_entity: null
+wandb_tags: ""
+wandb_group: null
+
+hydra:
+  run:
+    dir: outputs/hydra/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: outputs/hydra/multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    subdir: ${hydra.job.num}

@@ -1,0 +1,7 @@
+# @package _global_
+# Random-encoder control: frozen random encoder, brain decoders trained.
+# For its semantic score, run brain2sem_stage2 with freeze_from=<this run>/model_last.pt.
+train_mode: brain_only
+freeze_from: random
+auxk: false
+name_suffix: random_encoder

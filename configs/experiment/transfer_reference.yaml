@@ -1,0 +1,7 @@
+# @package _global_
+# Reference run for the new subjects UTS07 and UTS08: brain decoders on the frozen coupled-SAE encoder
+# (seed 0). Script 34 reads its voxel selection. Pass freeze_from=<seed-0 coupled SAE run>/model_last.pt.
+subjects: UTS07,UTS08
+train_mode: brain_only
+auxk: false
+name_suffix: transfer_reference

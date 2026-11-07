@@ -1,0 +1,6 @@
+# @package _global_
+# As in the paper's ablation table, rows A, C and D were trained without AuxK.
+auxk: false
+# Ablation row C: the coupled SAE with Matryoshka levels [2, 5].
+matryoshka_levels: [2, 5]
+name_suffix: ablation_C

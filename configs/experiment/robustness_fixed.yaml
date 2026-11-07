@@ -1,0 +1,5 @@
+# @package _global_
+# Robustness check: the coupled SAE with per-subject validation and per-subject z-scoring.
+val_masked: true
+zscore_own_rows: true
+name_suffix: robustness_fixed

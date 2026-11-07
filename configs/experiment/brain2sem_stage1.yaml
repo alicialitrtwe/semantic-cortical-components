@@ -1,0 +1,6 @@
+# @package _global_
+# Brain->Sem, stage 1: brain loss only, validation brain loss restricted to each subject's stories.
+train_mode: brain_only
+auxk: false
+val_masked: true
+name_suffix: brain2sem_stage1

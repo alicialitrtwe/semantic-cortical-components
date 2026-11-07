@@ -1,0 +1,12 @@
+outputs/
+reports/
+external/
+data/
+*.pt
+*.npz
+*.npy
+*.hdf
+__pycache__/
+.venv/
+.pytest_cache/
+*.egg-info/

@@ -1,0 +1,4 @@
+# @package _global_
+# Ablation row E: the coupled SAE with a learnable per-voxel scale.
+brain_voxel_scale: true
+name_suffix: ablation_E

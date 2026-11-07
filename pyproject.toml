@@ -1,0 +1,44 @@
+[project]
+name = "semantic-cortical-components"
+version = "1.0.0"
+description = "Code for 'Semantic-Cortical Components: A Multisubject Coupled Sparse Autoencoder for Interpretable Language Encoding in fMRI' (NeurIPS 2026)"
+readme = "README.md"
+license = {text = "CC-BY-NC-4.0"}
+authors = [{name = "Alicia Zeng"}]
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=2.0",
+    "scipy>=1.13",
+    "torch>=2.2",
+    "h5py>=3.10",
+    "pandas>=2.2",
+    "matplotlib>=3.9",
+    "joblib>=1.4",
+    "scikit-learn>=1.5",
+    "statsmodels>=0.14",
+    "nibabel>=5.2",
+    "himalaya>=0.4.6",
+    "voxelwise_tutorials>=0.1.0",
+    "hydra-core>=1.3.2",
+    "tqdm>=4.66",
+    "pillow>=10.0",
+]
+
+[project.optional-dependencies]
+# Gemma-2-2b activations (scripts/02b) and the sentence-embedding coherence (scripts/29)
+text = ["transformers>=4.40", "accelerate>=0.30", "sentence-transformers>=3.0", "gensim>=4.3"]
+# Cortical surface maps and flatmaps (scripts 18, 25, 27, 29, 30, 31; Figure 2 panels)
+surface = ["pycortex>=1.2"]
+
+[dependency-groups]
+dev = ["pytest>=8.0"]
+
+[tool.setuptools.packages.find]
+include = ["sparsebrain*"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
